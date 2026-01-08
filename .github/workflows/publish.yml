@@ -1,0 +1,110 @@
+name: Publish to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  publish:
+    name: Publish to npm and create release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Configure git
+        run: |
+          git config --global user.name "Rahul Radhakrishnan"
+          git config --global user.email "rahulrkr@hotmail.com"
+
+      - name: Bump version
+        id: version
+        run: |
+          NEW_VERSION=$(npm version ${{ inputs.version_type }} --no-git-tag-version)
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "version_number=${NEW_VERSION#v}" >> $GITHUB_OUTPUT
+
+      - name: Build project
+        run: npm run build
+
+      - run: npm install -g npm@latest
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+      
+      - name: Commit version bump
+        run: |
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
+
+      - name: Create git tag
+        run: |
+          git tag ${{ steps.version.outputs.new_version }}
+
+      - name: Push changes and tags
+        run: |
+          git push origin HEAD:${{ github.ref_name }}
+          git push origin ${{ steps.version.outputs.new_version }}
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 ${{ steps.version.outputs.new_version }}^ 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" ${{ steps.version.outputs.new_version }})
+            echo "previous_tag=" >> $GITHUB_OUTPUT
+          else
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" ${PREVIOUS_TAG}..${{ steps.version.outputs.new_version }})
+            echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+          fi
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.new_version }}
+          name: Release ${{ steps.version.outputs.new_version }}
+          body: |
+            ## Changes in ${{ steps.version.outputs.new_version }}
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ---
+            ${{ steps.changelog.outputs.previous_tag && format('**Full Changelog**: https://github.com/{0}/compare/{1}...{2}', github.repository, steps.changelog.outputs.previous_tag, steps.version.outputs.new_version) || format('**Initial Release**: {0}', steps.version.outputs.new_version) }}
+
+            ### Installation
+
+            ```bash
+            npm install undici-workflow-engine@${{ steps.version.outputs.version_number }}
+            ```
+          draft: false
+          prerelease: false
+          generate_release_notes: false
