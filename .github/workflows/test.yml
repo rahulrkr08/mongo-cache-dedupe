@@ -44,12 +44,9 @@ jobs:
         run: npm ci
 
       - name: Wait for MongoDB
-        run: |
-          until mongosh --eval "db.adminCommand({ ping: 1 })" > /dev/null 2>&1; do
-            echo "Waiting for MongoDB to be ready..."
-            sleep 2
-          done
-          echo "MongoDB is ready!"
+        run: node scripts/wait-for-mongodb.js
+        env:
+          MONGODB_URL: mongodb://localhost:27017
 
       - name: Run tests
         run: npm test

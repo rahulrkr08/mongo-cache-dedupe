@@ -8,13 +8,10 @@ set -e
 echo "Starting MongoDB container..."
 docker-compose up -d mongodb
 
-echo "Waiting for MongoDB to be ready..."
-until docker-compose exec -T mongodb mongosh --eval "db.adminCommand('ping')" > /dev/null 2>&1; do
-  echo "  Waiting for MongoDB to accept connections..."
-  sleep 2
-done
+echo ""
+node scripts/wait-for-mongodb.js
 
-echo "MongoDB is ready!"
+echo ""
 echo ""
 echo "Connection details:"
 echo "  URL: mongodb://localhost:27017"
