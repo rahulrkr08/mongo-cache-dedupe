@@ -1,0 +1,47 @@
+{
+  "name": "mongo-cache-dedupe",
+  "version": "0.1.0",
+  "description": "MongoDB storage adapter for async-cache-dedupe",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "borp",
+    "test:unit": "borp tests/MongoStorage.test.js",
+    "test:integration": "borp tests/integration.test.js",
+    "lint": "standard",
+    "lint:fix": "standard --fix"
+  },
+  "keywords": [
+    "mongodb",
+    "cache",
+    "async-cache-dedupe",
+    "storage",
+    "adapter",
+    "dedupe",
+    "ttl",
+    "invalidation"
+  ],
+  "author": "Rahul Radhakrishnan",
+  "license": "MIT",
+  "dependencies": {
+    "async-cache-dedupe": "^3.4.0"
+  },
+  "peerDependencies": {
+    "mongodb": "^6.0.0"
+  },
+  "devDependencies": {
+    "borp": "^0.18.0",
+    "mongodb": "^6.0.0",
+    "standard": "^17.1.0"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/mongo-cache-dedupe.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/mongo-cache-dedupe/issues"
+  }
+}
