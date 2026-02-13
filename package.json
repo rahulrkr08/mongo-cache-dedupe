@@ -1,6 +1,6 @@
 {
   "name": "mongo-cache-dedupe",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MongoDB storage adapter for async-cache-dedupe",
   "main": "index.js",
   "type": "commonjs",
