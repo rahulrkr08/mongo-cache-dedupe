@@ -107,7 +107,6 @@ Creates a new MongoStorage instance.
 - `db` (Object, required if `collection` not provided): MongoDB database instance
 - `collectionName` (String, optional): Collection name when using `db` option (default: `'cache'`)
 - `invalidation` (Object, optional): Invalidation configuration
-- `log` (Object, optional): Pino-compatible logger instance
 
 **Examples:**
 
@@ -128,11 +127,6 @@ const storage = new MongoStorage({
   collectionName: 'my_cache'
 })
 
-// With logger
-const storage = new MongoStorage({
-  collection,
-  log: logger
-})
 ```
 
 ### Methods
