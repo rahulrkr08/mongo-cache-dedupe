@@ -39,9 +39,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/mongo-cache-dedupe.git"
+    "url": "git+https://github.com/rahulrkr08/mongo-cache-dedupe.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/mongo-cache-dedupe/issues"
+    "url": "https://github.com/rahulrkr08/mongo-cache-dedupe/issues"
   }
 }
