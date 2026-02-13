@@ -92,6 +92,18 @@ class MockCollection {
     return { acknowledged: true, modifiedCount: 1 }
   }
 
+  async bulkWrite (operations, options) {
+    const result = { ok: 1, nModified: 0 }
+    for (const operation of operations) {
+      if (operation.updateOne) {
+        const { filter, update, upsert } = operation.updateOne
+        await this.updateOne(filter, update, { upsert })
+        result.nModified++
+      }
+    }
+    return result
+  }
+
   async deleteOne (filter) {
     this.data.delete(filter._id)
     return { acknowledged: true, deletedCount: 1 }
