@@ -60,9 +60,6 @@ jobs:
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "version_number=${NEW_VERSION#v}" >> $GITHUB_OUTPUT
 
-      - name: Build project
-        run: npm run build
-
       - run: npm install -g npm@latest
 
       - name: Publish to npm
