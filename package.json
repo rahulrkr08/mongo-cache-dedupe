@@ -3,6 +3,7 @@
   "version": "0.3.1",
   "description": "MongoDB storage adapter for async-cache-dedupe",
   "main": "index.js",
+  "types": "index.d.ts",
   "type": "commonjs",
   "scripts": {
     "test": "borp",
