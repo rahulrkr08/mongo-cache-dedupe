@@ -27,7 +27,7 @@
     "async-cache-dedupe": "^3.4.0"
   },
   "peerDependencies": {
-    "mongodb": "^6.0.0"
+    "mongodb": "^7.2.0"
   },
   "devDependencies": {
     "borp": "^1.0.0",
